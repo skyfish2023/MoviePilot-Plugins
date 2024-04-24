@@ -111,8 +111,8 @@ class AdaptiveIntroSkip(_PluginBase):
                 intro_end = current_sec
                 #  and current_sec>self._pause_time
                 # 批量标记之后的所有剧集，不影响已经看过的标记
-                # for next_episode_id in next_episode_ids:
-                #     update_intro(next_episode_id, intro_start, intro_end)
+                for next_episode_id in next_episode_ids:
+                    update_intro(next_episode_id, intro_start, intro_end)
                 chapter_info['intro_start'] = intro_start
                 chapter_info['intro_end'] = intro_end
                 logger.info(
