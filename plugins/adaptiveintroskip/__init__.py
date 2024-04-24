@@ -105,12 +105,12 @@ class AdaptiveIntroSkip(_PluginBase):
                                                           "intro_end": 0,
                                                           "credits_start": 0}
             # 在暂停播放时记录时间
-            if current_sec < (self._begin_min * 60) and event_info.event == 'playback.pause':
-                self._pause_time = current_sec
-                intro_start = self._pause_time
-                chapter_info['intro_start'] = intro_start
-                logger.info(
-                    f"{event_info.item_name} 后续剧集片头开始设置在 {int(intro_start / 60)}分{int(intro_start % 60)}秒 结束")
+            # if current_sec < (self._begin_min * 60) and event_info.event == 'playback.pause':
+            #     self._pause_time = current_sec
+            #     intro_start = self._pause_time
+            #     chapter_info['intro_start'] = intro_start
+            #     logger.info(
+            #         f"{event_info.item_name} 后续剧集片头开始设置在 {int(intro_start / 60)}分{int(intro_start % 60)}秒 结束")
             # 当前播放时间（s）在[开始,begin_min]之间，且是暂停播放后，恢复播放的动作，标记片头
             if current_sec < (self._begin_min * 60) and event_info.event == 'playback.unpause':
                 # if current_sec<=self._pause_time:
