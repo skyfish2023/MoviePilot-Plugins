@@ -104,31 +104,23 @@ class AdaptiveIntroSkip(_PluginBase):
                                                           "intro_start": 0,
                                                           "intro_end": 0,
                                                           "credits_start": 0}
-            
+            # 在暂停播放时记录时间
+            if current_sec < (self._begin_min * 60) and event_info.event == 'playback.pause':
+                self._pause_time = current_sec
             # 当前播放时间（s）在[开始,begin_min]之间，且是暂停播放后，恢复播放的动作，标记片头
-            if current_sec < (self._begin_min * 60) and event_info.event == 'playback.unpause':
-                # if current_sec<=self._pause_time:
-                #     logger.info(
-                #     f"恢复时间不大于暂停时间：{self._pause_time}   {current_sec}")
-                #     return
+            if current_sec < (self._begin_min * 60) and current_sec>self._pause_time and event_info.event == 'playback.unpause':
                 intro_start = self._pause_time
                 intro_end = current_sec
                 # # 批量标记之后的所有剧集，不影响已经看过的标记
-                # for next_episode_id in next_episode_ids:
-                #     update_intro(next_episode_id, intro_start, intro_end)
+                for next_episode_id in next_episode_ids:
+                    update_intro(next_episode_id, intro_start, intro_end)
                 chapter_info['intro_start'] = intro_start
                 chapter_info['intro_end'] = intro_end
                 logger.info(
                     f"{event_info.item_name} 后续剧集片头开始设置在 {int(intro_start / 60)}分{int(intro_start % 60)}秒 结束")
                 logger.info(
                     f"{event_info.item_name} 后续剧集片头1结尾设置在 {int(intro_end / 60)}分{int(intro_end % 60)}秒 结束")
-            # 在暂停播放时记录时间
-            if current_sec < (self._begin_min * 60) and event_info.event == 'playback.pause':
-                self._pause_time = current_sec
-                # intro_start = self._pause_time
-                # chapter_info['intro_start'] = intro_start
-                # logger.info(
-                #     f"{event_info.item_name} 后续剧集片头开始设置在 {int(intro_start / 60)}分{int(intro_start % 60)}秒 结束")
+            
             # 当前播放时间（s）在[end_min,结束]之间，且是退出播放动作，标记片尾
             if current_sec > (total_sec - self._end_min * 60) and event_info.event == 'playback.stop':
                 credits_start = current_sec
