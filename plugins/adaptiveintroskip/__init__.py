@@ -54,7 +54,7 @@ class AdaptiveIntroSkip(_PluginBase):
     @eventmanager.register(EventType.WebhookMessage)
     def hook(self, event: Event):
         event_info: WebhookEventInfo = event.event_data
-        logger.info(f"当前事件：{event_info.event}")
+        logger.debug(f"当前事件：{event_info.event}")
         if event_info.channel != 'emby' and event_info.media_type != 'Episode':
             logger.info("只支持Emby的Episode 目前其他服务端、其他影片不支持")
             return
