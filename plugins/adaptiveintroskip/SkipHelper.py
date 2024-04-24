@@ -63,14 +63,14 @@ def update_intro(item_id, intro_start, intro_end):
         requests.get(
             f"{base_url}emby/chapter_api/update_chapters?id={item_id}&index_list={','.join(map(str, old_tags))}&action=remove",
             headers=headers)
-        # 添加新的片头开始
-        requests.get(
-            f"{base_url}emby/chapter_api/update_chapters?id={item_id}&action=add&name=%E7%89%87%E5%A4%B4&type=intro_start&time={format_time(intro_start)}",
-            headers=headers)
-        # 新的片头结束
-        requests.get(
-            f"{base_url}emby/chapter_api/update_chapters?id={item_id}&action=add&name=%E7%89%87%E5%A4%B4%E7%BB%93%E6%9D%9F&type=intro_end&time={format_time(intro_end)}",
-            headers=headers)
+        # # 添加新的片头开始
+        # requests.get(
+        #     f"{base_url}emby/chapter_api/update_chapters?id={item_id}&action=add&name=%E7%89%87%E5%A4%B4&type=intro_start&time={format_time(intro_start)}",
+        #     headers=headers)
+        # # 新的片头结束
+        # requests.get(
+        #     f"{base_url}emby/chapter_api/update_chapters?id={item_id}&action=add&name=%E7%89%87%E5%A4%B4%E7%BB%93%E6%9D%9F&type=intro_end&time={format_time(intro_end)}",
+        #     headers=headers)
         return intro_end
     except Exception as e:
         logger.error("异常错误：%s" % str(e))
