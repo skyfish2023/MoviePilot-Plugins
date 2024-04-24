@@ -152,9 +152,10 @@ class AdaptiveIntroSkip(_PluginBase):
 
         if next_episode_ids:
             # 批量标记新入库的剧集
+            intro_start = chapter_info.get("intro_start")
             intro_end = chapter_info.get("intro_end")
             for next_episode_id in next_episode_ids:
-                update_intro(next_episode_id, intro_end)
+                update_intro(next_episode_id, intro_start, intro_end)
             logger.info(
                 f"{series_name} {event_info.season_episode} 新入库剧集，片头设置在 {int(intro_end / 60)}分{int(intro_end % 60)}秒 结束")
 
