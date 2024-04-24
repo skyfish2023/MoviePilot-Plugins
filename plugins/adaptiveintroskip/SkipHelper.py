@@ -65,7 +65,7 @@ def update_intro(item_id, intro_start, intro_end):
             headers=headers)
         # 添加新的片头开始
         requests.get(
-            f"{base_url}emby/chapter_api/update_chapters?id={item_id}&action=add&name=%E7%89%87%E5%A4%B4&type=intro_start&time=00:00:00.000",
+            f"{base_url}emby/chapter_api/update_chapters?id={item_id}&action=add&name=%E7%89%87%E5%A4%B4&type=intro_start&time={format_time(intro_start)}",
             headers=headers)
         # 新的片头结束
         requests.get(

@@ -108,7 +108,8 @@ class AdaptiveIntroSkip(_PluginBase):
             if current_sec < (self._begin_min * 60) and event_info.event == 'playback.pause':
                 self._pause_time = current_sec
             # 当前播放时间（s）在[开始,begin_min]之间，且是暂停播放后，恢复播放的动作，标记片头
-            if current_sec < (self._begin_min * 60) and current_sec>self._pause_time and event_info.event == 'playback.unpause':
+            if current_sec < (self._begin_min * 60) and event_info.event == 'playback.unpause':
+                #  and current_sec>self._pause_time
                 intro_start = self._pause_time
                 intro_end = current_sec
                 # # 批量标记之后的所有剧集，不影响已经看过的标记
