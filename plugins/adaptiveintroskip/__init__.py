@@ -35,6 +35,8 @@ class AdaptiveIntroSkip(_PluginBase):
     _include: str = ''
     _exclude: str = ''
     _spec = ''
+    # 添加pause_time属性
+    _pause_time = 0
 
     def init_plugin(self, config: dict = None):
         if config:
@@ -46,6 +48,8 @@ class AdaptiveIntroSkip(_PluginBase):
             self._exclude = config.get("exclude") or ''
             # 特别指定开始 结束时间
             self._spec = config.get("spec") or ''
+            # 初始化pause_time
+            self._pause_time = 0
 
     @eventmanager.register(EventType.WebhookMessage)
     def hook(self, event: Event):
@@ -53,7 +57,7 @@ class AdaptiveIntroSkip(_PluginBase):
         if event_info.channel != 'emby' and event_info.media_type != 'Episode':
             logger.info("只支持Emby的Episode 目前其他服务端、其他影片不支持")
             return
-        if event_info.event not in ['playback.unpause', 'playback.stop']:
+        if event_info.event not in ['playback.pause', 'playback.unpause', 'playback.stop']:
             # 'playback.pause' 'playback.start'
             return
 
@@ -97,14 +101,20 @@ class AdaptiveIntroSkip(_PluginBase):
             space_idx = event_info.item_name.index(' ')
             series_name = event_info.item_name[:space_idx]
             chapter_info = self.get_data(series_name) or {"item_id": event_info.item_id,
+                                                          "intro_start": 0,
                                                           "intro_end": 0,
                                                           "credits_start": 0}
+            # 在暂停播放时记录时间
+            if current_sec < (self._begin_min * 60) and event_info.event == 'playback.pause':
+                self._pause_time = current_sec
             # 当前播放时间（s）在[开始,begin_min]之间，且是暂停播放后，恢复播放的动作，标记片头
-            if current_sec < (self._begin_min * 60) and event_info.event == 'playback.unpause':
+            if current_sec < (self._begin_min * 60) and current_sec>self._pause_time and event_info.event == 'playback.unpause':
+                intro_start = self._pause_time
                 intro_end = current_sec
                 # 批量标记之后的所有剧集，不影响已经看过的标记
                 for next_episode_id in next_episode_ids:
-                    update_intro(next_episode_id, intro_end)
+                    update_intro(next_episode_id, intro_start, intro_end)
+                chapter_info['intro_start'] = intro_start
                 chapter_info['intro_end'] = intro_end
                 logger.info(
                     f"{event_info.item_name} 后续剧集片头设置在 {int(intro_end / 60)}分{int(intro_end % 60)}秒 结束")
