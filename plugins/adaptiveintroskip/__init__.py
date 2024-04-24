@@ -121,7 +121,7 @@ class AdaptiveIntroSkip(_PluginBase):
                 logger.info(
                     f"{event_info.item_name} 后续剧集片头开始设置在 {int(intro_start / 60)}分{int(intro_start % 60)}秒 结束")
                 logger.info(
-                    f"{event_info.item_name} 后续剧集片头结尾设置在 {int(intro_end / 60)}分{int(intro_end % 60)}秒 结束")
+                    f"{event_info.item_name} 后续剧集片头1结尾设置在 {int(intro_end / 60)}分{int(intro_end % 60)}秒 结束")
             # 在暂停播放时记录时间
             if current_sec < (self._begin_min * 60) and event_info.event == 'playback.pause':
                 self._pause_time = current_sec
