@@ -124,6 +124,8 @@ class AdaptiveIntroSkip(_PluginBase):
             if current_sec < (self._begin_min * 60) and event_info.event == 'playback.pause':
                 self._pause_time = current_sec
                 intro_start = self._pause_time
+                for next_episode_id in next_episode_ids:
+                    update_intro(next_episode_id, 0, intro_start)
                 logger.info(
                     f"{event_info.item_name} 后续剧集片头开始设置在 {int(intro_start / 60)}分{int(intro_start % 60)}秒 结束")
                 return
