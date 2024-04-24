@@ -54,7 +54,6 @@ class AdaptiveIntroSkip(_PluginBase):
     @eventmanager.register(EventType.WebhookMessage)
     def hook(self, event: Event):
         event_info: WebhookEventInfo = event.event_data
-        logger.debug(f"当前事件：{event_info.event}")
         if event_info.channel != 'emby' and event_info.media_type != 'Episode':
             logger.info("只支持Emby的Episode 目前其他服务端、其他影片不支持")
             return
@@ -109,14 +108,15 @@ class AdaptiveIntroSkip(_PluginBase):
             if current_sec < (self._begin_min * 60) and event_info.event == 'playback.pause':
                 self._pause_time = current_sec
                 intro_start = self._pause_time
+                chapter_info['intro_start'] = intro_start
                 logger.info(
                     f"{event_info.item_name} 后续剧集片头开始设置在 {int(intro_start / 60)}分{int(intro_start % 60)}秒 结束")
             # 当前播放时间（s）在[开始,begin_min]之间，且是暂停播放后，恢复播放的动作，标记片头
             if current_sec < (self._begin_min * 60) and event_info.event == 'playback.unpause':
-                if current_sec<=self._pause_time:
-                    logger.info(
-                    f"恢复时间不大于暂停时间：{self._pause_time}   {current_sec}")
-                    return
+                # if current_sec<=self._pause_time:
+                #     logger.info(
+                #     f"恢复时间不大于暂停时间：{self._pause_time}   {current_sec}")
+                #     return
                 intro_start = self._pause_time
                 intro_end = current_sec
                 # 批量标记之后的所有剧集，不影响已经看过的标记
